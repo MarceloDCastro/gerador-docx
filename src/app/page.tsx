@@ -9,14 +9,19 @@ import { useForm } from "react-hook-form";
 import { TagsForm } from "@/components/form";
 
 export default function Home() {
+  const [file, setFile] = useState<File>();
   const [docxHtml, setDocxHtml] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
   const tagsForm = useForm();
+  
+  const haveFile = !!file;
 
   async function onUploadFile(files: File[]) {
     const file = files[0];
     if(!file) return;
+
+    setFile(file);
 
     const arrayBuffer = await fileToArrayBuffer(file);
     
@@ -46,22 +51,28 @@ export default function Home() {
             {...getRootProps()}
           >
             <input type="file" {...getInputProps()} />
-            Arraste seu modelo aqui!
+            Arraste o modelo de contrato aqui!
           </div>
         )}
       </Dropzone>
 
-      {!!docxHtml && (
+      {!!haveFile && (
         <section>
           <Title as="h2">Convertido em HTML</Title>
           <div dangerouslySetInnerHTML={{ __html: docxHtml }} className="border max-h-[400px] p-5 overflow-scroll" />
         </section>
       )}
 
-      {!!tags.length && (
+      {!!haveFile && (
         <section>
-          <Title as="h2">Formulário das Tags</Title>
-          <TagsForm form={tagsForm} tags={tags} />
+          {!!tags.length ? (
+            <>
+              <Title as="h2">Formulário das Tags</Title>
+              <TagsForm form={tagsForm} tags={tags} file={file} />
+            </>
+          ) : (
+            <p>Nenhuma tag encontrada</p>
+          )}
         </section>
       )}
     </div>

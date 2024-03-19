@@ -1,13 +1,18 @@
+"use client"
+
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import { generateDocument } from "@/utils/docx";
+import { downloadFile } from "@/utils/download";
 
 interface TagsForm {
   form: UseFormReturn;
   tags: string[];
+  file?: File;
 }
 
-export function TagsForm({ form, tags }: TagsForm) {
+export function TagsForm({ form, tags, file }: TagsForm) {
   function renderTagsFormInputs() {
     return tags.map(tag => {
       return (
@@ -23,6 +28,15 @@ export function TagsForm({ form, tags }: TagsForm) {
     console.log({ data });
   }
 
+  async function handleDownload() {
+    if (!file) return;
+
+    const documentBlob = await generateDocument(file, form.getValues());
+    console.log({ documentBlob });
+
+    downloadFile({src: documentBlob, type: "docx", name: 'Arquivo gerado'})
+  }
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid grid-cols-12 gap-4 mb-4">
@@ -31,7 +45,7 @@ export function TagsForm({ form, tags }: TagsForm) {
 
       <div className="flex gap-4">
         <Button type="submit">Enviar</Button>
-        <Button type="button">Baixar Word</Button>
+        <Button type="button" onClick={handleDownload}>Baixar docx</Button>
       </div>
     </form>
   );
