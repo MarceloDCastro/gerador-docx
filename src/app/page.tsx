@@ -1,27 +1,38 @@
 "use client"
 
 import Dropzone from "react-dropzone";
-import mammoth from 'mammoth';
-import { fileToArrayBuffer } from "@/utils/docx";
+import { convertToHtml } from 'mammoth';
+import { fileToArrayBuffer, identifyDocxTags } from "@/utils/docx";
 import { useState } from "react";
+import { Title } from "@/components/text";
+import { useForm } from "react-hook-form";
+import { TagsForm } from "@/components/form";
 
 export default function Home() {
   const [docxHtml, setDocxHtml] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
+
+  const tagsForm = useForm();
 
   async function onUploadFile(files: File[]) {
     const file = files[0];
-
     if(!file) return;
 
     const arrayBuffer = await fileToArrayBuffer(file);
     
-    const resuultDocxToHtml = await mammoth.convertToHtml({ arrayBuffer });
+    const resultDocxToHtml = await convertToHtml({ arrayBuffer });
+    setDocxHtml(resultDocxToHtml.value);
 
-    setDocxHtml(resuultDocxToHtml.value);
+    const tags = await identifyDocxTags(arrayBuffer);
+    setTags(tags);
+
+    tagsForm.reset();
   }
 
   return (
-    <div className="p-10">
+    <div className="p-10 space-y-3">
+      <Title as="h1">Gerador de docx</Title>
+
       <Dropzone
         accept={{
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
@@ -40,7 +51,19 @@ export default function Home() {
         )}
       </Dropzone>
 
-      <div dangerouslySetInnerHTML={{ __html: docxHtml }} />
+      {!!docxHtml && (
+        <section>
+          <Title as="h2">Convertido em HTML</Title>
+          <div dangerouslySetInnerHTML={{ __html: docxHtml }} className="border max-h-[400px] p-5 overflow-scroll" />
+        </section>
+      )}
+
+      {!!tags.length && (
+        <section>
+          <Title as="h2">Formulário das Tags</Title>
+          <TagsForm form={tagsForm} tags={tags} />
+        </section>
+      )}
     </div>
   );
 }

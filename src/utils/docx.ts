@@ -1,3 +1,5 @@
+import { extractRawText } from "mammoth";
+
 export function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -16,4 +18,18 @@ export function fileToArrayBuffer(file: File): Promise<ArrayBuffer> {
 
     reader.readAsArrayBuffer(file);
   });
+}
+
+export async function identifyDocxTags(arrayBuffer: ArrayBuffer) {
+  const { value: rawText } = await extractRawText({ arrayBuffer });
+
+  const regex = /\{([^\}]+)\}/g;
+  const tags: string[] = [];
+  let match;
+
+  while ((match = regex.exec(rawText)) !== null) {
+    if(!tags.includes(match[1])) tags.push(match[1]);
+  }
+
+  return tags;
 }
