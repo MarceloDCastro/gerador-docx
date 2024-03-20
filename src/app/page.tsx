@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Title } from "@/components/text";
 import { useForm } from "react-hook-form";
 import { TagsForm } from "@/components/form";
+import * as docx from "docx-preview";
 
 export default function Home() {
   const [file, setFile] = useState<File>();
@@ -30,6 +31,8 @@ export default function Home() {
 
     const tags = await identifyDocxTags(arrayBuffer);
     setTags(tags);
+
+    docx.renderAsync(arrayBuffer, document.getElementById("docx-preview-container")!)
 
     tagsForm.reset();
   }
@@ -59,7 +62,14 @@ export default function Home() {
       {!!haveFile && (
         <section>
           <Title as="h2">Convertido em HTML</Title>
-          <div dangerouslySetInnerHTML={{ __html: docxHtml }} className="border max-h-[400px] p-5 overflow-scroll" />
+          <div dangerouslySetInnerHTML={{ __html: docxHtml }} className="border max-h-[300px] p-5 overflow-scroll" />
+        </section>
+      )}
+
+      {!!haveFile && (
+        <section>
+          <Title as="h2">Preview</Title>
+          <div id="docx-preview-container" className="border max-h-[800px] p-5 overflow-scroll" />
         </section>
       )}
 

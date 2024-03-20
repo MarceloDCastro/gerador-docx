@@ -17,6 +17,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  docx-preview:
+    specifier: ^0.3.0
+    version: 0.3.0
   docxtemplater:
     specifier: ^3.46.0
     version: 3.46.0
@@ -929,6 +932,12 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /docx-preview@0.3.0:
+    resolution: {integrity: sha512-uLrLhytJkXe420Q0C/cyYuZYcKr+2bh7aXjwR/XclEIuGq9ifDRH1/GVqLBn7+ZX29CKC1bZovtjyfhETjdKKg==}
+    dependencies:
+      jszip: 3.10.1
+    dev: false
 
   /docxtemplater@3.46.0:
     resolution: {integrity: sha512-KZEy3icAm+Y+EtcAxomDXrjZq2HzzQdHVu+g0VQUttt0c7cMmTztNGJoWLmCTssCjOtGFePzRVwMQp8bewL0TQ==}

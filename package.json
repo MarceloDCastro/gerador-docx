@@ -13,6 +13,7 @@
     "angular-expressions": "^1.2.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "docx-preview": "^0.3.0",
     "docxtemplater": "^3.46.0",
     "lucide-react": "^0.359.0",
     "mammoth": "^1.7.0",
